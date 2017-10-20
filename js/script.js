@@ -3,6 +3,7 @@ function loadData() {
 
     return false;
 }
+$(loadData);
 
 var $body = $('body');
 var $nytHeaderElem = $('#nytimes-header');
