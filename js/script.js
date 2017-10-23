@@ -1,9 +1,15 @@
-function loadData() {
-    $("#form-container").submit(loadStreetViewData, loadNyTimesData, loadWikipediaData, clearData);
+function main() {
+    function loadData(){
+    
+    $(loadStreetViewData);
+    $(loadNyTimesData) 
+    $(loadWikipediaData)
+    $(clearData);
 
-    return false;
-}
-$(loadData);
+    }$("#form-container").submit(loadData)
+    
+}   
+$(main);
 
 var $body = $('body');
 var $nytHeaderElem = $('#nytimes-header');
@@ -29,22 +35,21 @@ function loadStreetViewData() {
 function loadNyTimesData() {
     var nytimesUrl = 'http://api.nytimes.com/svc/search/v2/articlesearch.json?q=' + viewCity + '&sort=newest&api-key=c91dd71c5e714b2d95493136687abbfc';
     $.getJSON(nytimesUrl, function(data) {
-            $nytHeaderElem.text('New York Times Articles About ' + viewCity);
-        }
-        .success(function() {
 
-            articles = data.response.docs;
-            for (var i = 0; i < articles.length; i++) {
-                var article = articles[i];
-                $nytElem.append('<li class="article">' +
-                    '<a href="' + article.web_url + '">' + article.headline.main + '</a>' +
-                    '<p>' + article.snippet + '</p>' +
-                    '</li>');
-            };
-        })
-        .error(function(e) {
-            $nytHeaderElem.text('New York Times Articles Could Not Be Loaded');
-        }));
+        $nytHeaderElem.text('New York Times Articles About ' + viewCity);
+
+        articles = data.response.docs;
+        for (var i = 0; i < articles.length; i++) {
+            var article = articles[i];
+            $nytElem.append('<li class="article">' +
+                '<a href="' + article.web_url + '">' + article.headline.main + '</a>' +
+                '<p>' + article.snippet + '</p>' +
+                '</li>');
+        };
+
+    }).fail(function(e) {
+        $nytHeaderElem.text('New York Times Articles Could Not Be Loaded');
+    });
 }
 
 function loadWikipediaData() {
@@ -53,17 +58,14 @@ function loadWikipediaData() {
         url: wikiUrl,
         dataType: "jsonp",
         success: function(response) {
-                var articleList = response[1];
+            var articleList = response[1];
 
-                for (var i = 0; i < articleList.length; i++) {
-                    articleStr = articleList[i];
-                    var url = 'http://en.wikipedia.org/wiki/' + articleStr;
-                    $wikiElem.append('<li><a href="' + url + '">' + articleStr + '</a></li>');
-                };
-                clearTimeout(wikiRequestTimeout);
-            }
-            .fail(function(response) {
-                $wikiElem.text("failed to get wikipedia resources");
-            })
+            for (var i = 0; i < articleList.length; i++) {
+                articleStr = articleList[i];
+                var url = 'http://en.wikipedia.org/wiki/' + articleStr;
+                $wikiElem.append('<li><a href="' + url + '">' + articleStr + '</a></li>');
+            };
+            clearTimeout(wikiRequestTimeout);
+        }
     });
 }
