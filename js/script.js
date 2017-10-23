@@ -1,25 +1,36 @@
-function main() {
-    function loadData(){
-    
-    $(loadStreetViewData);
-    $(loadNyTimesData) 
-    $(loadWikipediaData)
-    $(clearData);
-    
-    return false;
-    }$("#form-container").submit(loadData)
-    
-}   
-$(main);
+var $body;
+var $nytHeaderElem;
+var $nytElem;
+var $wikiHeaderElem;
+var $wikiElem;
+var $greeting;
+var viewStreet;
+var viewCity;
 
-var $body = $('body');
-var $nytHeaderElem = $('#nytimes-header');
-var $nytElem = $('#nytimes-articles');
-var $wikiHeaderElem = $('#wikipedia-header')
-var $wikiElem = $('#wikipedia-links');
-var $greeting = $('#greeting');
-var viewStreet = $("#street").val();
-var viewCity = $("#city").val();
+function main() {
+
+    function loadData() {
+        prepareDOMElements();
+        loadStreetViewData();
+        loadNyTimesData();
+        loadWikipediaData();
+        clearData();
+
+        return false;
+    }
+    $("#form-container").submit(loadData)
+}
+
+function prepareDOMElements() {
+    $body = $('body');
+    $nytHeaderElem = $('#nytimes-header');
+    $nytElem = $('#nytimes-articles');
+    $wikiHeaderElem = $('#wikipedia-header')
+    $wikiElem = $('#wikipedia-links');
+    $greeting = $('#greeting');
+    viewStreet = $("#street").val();
+    viewCity = $("#city").val();
+}
 
 function clearData() {
     $wikiElem.text("");
@@ -34,11 +45,10 @@ function loadStreetViewData() {
 }
 
 function loadNyTimesData() {
-    var nytimesUrl = 'http://api.nytimes.com/svc/search/v2/articlesearch.json?q=' + viewCity + '&sort=newest&api-key=c91dd71c5e714b2d95493136687abbfc';
-    $.getJSON(nytimesUrl, function(data) {
+    var nytimesUrl = 'https://api.nytimes.com/svc/search/v2/articlesearch.json?q=' + viewCity + '&sort=newest&api-key=c91dd71c5e714b2d95493136687abbfc';
+    $.getJSON(nytimesUrl, {}).done(function(data) {
 
         $nytHeaderElem.text('New York Times Articles About ' + viewCity);
-
         articles = data.response.docs;
         for (var i = 0; i < articles.length; i++) {
             var article = articles[i];
@@ -46,19 +56,19 @@ function loadNyTimesData() {
                 '<a href="' + article.web_url + '">' + article.headline.main + '</a>' +
                 '<p>' + article.snippet + '</p>' +
                 '</li>');
-        };
-
-    }).fail(function(e) {
+        }
+    }).fail(function() {
         $nytHeaderElem.text('New York Times Articles Could Not Be Loaded');
     });
 }
 
 function loadWikipediaData() {
-    var wikiUrl = 'http://en.wikipedia.org/w/api.php?action=opensearch&search=' + viewCity + '&format=json&callback-wikiCallback';
+    var wikiUrl = 'https://en.wikipedia.org/w/api.php?action=opensearch&search=' + viewCity + '&format=json&callback-wikiCallback';
     $.ajax({
-        url: wikiUrl,
-        dataType: "jsonp",
-        success: function(response) {
+            url: wikiUrl,
+            dataType: "jsonp",
+        })
+        .done(function(response) {
             var articleList = response[1];
 
             for (var i = 0; i < articleList.length; i++) {
@@ -66,7 +76,8 @@ function loadWikipediaData() {
                 var url = 'http://en.wikipedia.org/wiki/' + articleStr;
                 $wikiElem.append('<li><a href="' + url + '">' + articleStr + '</a></li>');
             };
-            clearTimeout(wikiRequestTimeout);
-        }
-    });
+        }).fail(function() {
+            $wikiElem.text('Wikipedia Articles Could Not Be Loaded');
+        });
 }
+$(main);
