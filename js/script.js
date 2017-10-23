@@ -5,7 +5,8 @@ function main() {
     $(loadNyTimesData) 
     $(loadWikipediaData)
     $(clearData);
-
+    
+    return false;
     }$("#form-container").submit(loadData)
     
 }   
