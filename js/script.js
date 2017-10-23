@@ -18,14 +18,14 @@ function main() {
 
         return false;
     }
-    $("#form-container").submit(loadData)
+    $("#form-container").submit(loadData);
 }
 
 function prepareDOMElements() {
     $body = $('body');
     $nytHeaderElem = $('#nytimes-header');
     $nytElem = $('#nytimes-articles');
-    $wikiHeaderElem = $('#wikipedia-header')
+    $wikiHeaderElem = $('#wikipedia-header');
     $wikiElem = $('#wikipedia-links');
     $greeting = $('#greeting');
     viewStreet = $("#street").val();
@@ -46,7 +46,8 @@ function loadStreetViewData() {
 
 function loadNyTimesData() {
     var nytimesUrl = 'https://api.nytimes.com/svc/search/v2/articlesearch.json?q=' + viewCity + '&sort=newest&api-key=c91dd71c5e714b2d95493136687abbfc';
-    $.getJSON(nytimesUrl, {}).done(function(data) {
+    $.getJSON(nytimesUrl, {
+    }).done(function(data) {
 
         $nytHeaderElem.text('New York Times Articles About ' + viewCity);
         articles = data.response.docs;
