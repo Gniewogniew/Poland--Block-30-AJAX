@@ -6,30 +6,33 @@ var $wikiElem;
 var $greeting;
 var viewStreet;
 var viewCity;
+var formContainer;
 
 function main() {
-
-    function loadData() {
-        prepareDOMElements();
-        loadStreetViewData();
-        loadNyTimesData();
-        loadWikipediaData();
-        clearData();
-
-        return false;
-    }
-    $("#form-container").submit(loadData);
+    prepareDOMElements();
+    $(formContainer).submit(loadData);
 }
 
-function prepareDOMElements() {
-    $body = $('body');
-    $nytHeaderElem = $('#nytimes-header');
-    $nytElem = $('#nytimes-articles');
-    $wikiHeaderElem = $('#wikipedia-header');
-    $wikiElem = $('#wikipedia-links');
-    $greeting = $('#greeting');
+function loadData() {
     viewStreet = $("#street").val();
     viewCity = $("#city").val();
+    clearData();
+    loadStreetViewData();
+    loadNyTimesData();
+    loadWikipediaData();
+    $(formContainer).trigger("reset");
+ 
+    return false;
+    }
+
+function prepareDOMElements() {
+    $body = $("body");
+    $nytHeaderElem = $("#nytimes-header");
+    $nytElem = $("#nytimes-articles");
+    $wikiHeaderElem = $("#wikipedia-header");
+    $wikiElem = $("#wikipedia-links");
+    $greeting = $("#greeting");
+    formContainer = $("#form-container");
 }
 
 function clearData() {
@@ -76,7 +79,7 @@ function loadWikipediaData() {
                 articleStr = articleList[i];
                 var url = 'http://en.wikipedia.org/wiki/' + articleStr;
                 $wikiElem.append('<li><a href="' + url + '">' + articleStr + '</a></li>');
-            };
+            }
         }).fail(function() {
             $wikiElem.text('Wikipedia Articles Could Not Be Loaded');
         });
